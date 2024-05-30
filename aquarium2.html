@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GSAP Bookshelf</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/gsap.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jersey+15&family=Platypi:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+        .jersey-15-regular {
+  font-family: "Jersey 15", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+h3{
+    font-family: "Jersey 15",sans-serif;
+}
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-image: url("remy-bg.JPG");
+            background-position: center;
+            background-size: cover;
+            overflow: hidden; /* Ensure the smoke stays within the viewport */
+        }
+
+        .bookshelf {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            margin-left: 20px;
+            z-index: 1; /* Ensure the bookshelf is above the smoke */
+
+
+        }
+
+        .book-card {
+            position: relative;
+            perspective: 1000px;
+            width: 300px;
+            height: 300px;
+            cursor: pointer;
+        }
+
+        .book-front, .book-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .book-front {
+              background: linear-gradient(to bottom, #000000, #EEEEEE);
+        }
+
+        .book-back {
+            background-color: #e0e0e0;
+            transform: rotateY(180deg);
+        }
+
+        .book-card.flipped .book-front {
+            transform: rotateY(180deg);
+        }
+
+        .book-card.flipped .book-back {
+            transform: rotateY(0);
+        }
+
+        .book-image {
+            width: 100%;
+            height: 70%;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+
+        .book-info {
+            padding: 16px;
+
+        }
+
+        .book-info h3 {
+            margin: 0 0 8px;
+
+        }
+
+        .book-info p {
+            margin: 0;
+        }
+
+        .smoke {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: radial-gradient(circle, rgba(255,255,255,0.6) 20%, rgba(255,255,255,0) 60%);
+            animation: smokeAnimation 3s infinite linear;
+            z-index: 0; /* Ensure the smoke is behind the books */
+            opacity: 0.8;
+            border-radius: 20px;
+        }
+
+        @keyframes smokeAnimation {
+            0% {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            50% {
+                transform: translateY(-50%);
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-200%);
+                opacity: 0;
+            }
+        }
+                .card {
+            width: 350px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .card-image {
+            width: 100%;
+            height: 180px;
+            overflow: hidden;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-details {
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .card-info {
+            font-size: 1rem;
+            color: #666;
+        }
+
+        .social-links {
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            display: inline-block;
+            margin-right: 10px;
+            text-decoration: none;
+            color: #666;
+        }
+
+        .social-links a:last-child {
+            margin-right: 0;
+        }
+
+        .social-links a:hover {
+            color: #333;
+        }
+
+        nav {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px; /* Adjust height as needed */
+            background-color: rgba(255, 255, 255, 0.5); /* Transparent background */
+            backdrop-filter: blur(10px); /* Apply blur effect for a frosted glass effect */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2; /* Ensure the navbar is above other elements */
+        }
+
+        .navbar-brand{
+            font-size: 2.5rem;
+            font-weight: bold;
+            color:#333
+        }
+        @media screen and (max-width: 767px){
+               .bookshelf {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            margin-bottom: 5px;
+            margin-left: 5px;
+            z-index: 1; /* Ensure the bookshelf is above the smoke */
+                   height: 100vh;
+                   overflow-y: auto;
+                   padding-top:30px;
+        }
+        }
+
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="navbar-brand jersey-15-regular">Remiyyah's Portfolio</div>
+    </nav>
+    <div class="bookshelf" id="bookshelf">
+        <div class="book-card">
+            <div class="book-front">
+                <img src="star2-web.jpg" alt="Book Title" class="book-image">
+                <div class="book-info">
+                    <h3>Star Wars Landing Page</h3>
+                    <p>Author: Remiyyah</p>
+                </div>
+            </div>
+            <div class="book-back">
+                <div class="book-info">
+                   <h3>Link to Website</h3>
+                    <a href="https://www.github.com/Remiyyah" target="_blank">Visit GitHub</a>
+                </div>
+            </div>
+        </div>
+        <!-- Add more book cards as needed -->
+        <div class="book-card">
+            <div class="book-front">
+                <img src="web1.jpg" alt="Book Title" class="book-image">
+                <div class="book-info">
+                    <h3>Law Firm Website</h3>
+                    <p>Author: Remiyyah</p>
+                </div>
+            </div>
+            <div class="book-back">
+                <div class="book-info">
+                    <h3>Link to Website</h3>
+                    <a href="https://remiyyah.github.io/Justice-Law-Website/" target="_blank">Visit Justice Law</a>
+                </div>
+            </div>
+        </div>
+        <div class="book-card">
+            <div class="book-front">
+                <img src="web2.PNG" alt="Book Title" class="book-image">
+                <div class="book-info">
+                    <h3>Non-Profit Website</h3>
+                    <p>Author: Remiyyah</p>
+                </div>
+            </div>
+            <div class="book-back">
+                <div class="book-info">
+                    <h3>Link to Website</h3>
+                    <a href="https://remiyyah.github.io/Non-Profit-Website/" target="_blank">Visit Non-Profit Website</a>
+                </div>
+            </div>
+        </div>
+        <div class="book-card">
+            <div class="book-front">
+                <img src="web3.PNG" alt="Book Title" class="book-image">
+                <div class="book-info">
+                    <h3>Harmony Real Estate Website</h3>
+                    <p>Author: Remiyyah</p>
+                </div>
+            </div>
+            <div class="book-back">
+                <div class="book-info">
+                    <h3>Link to Website</h3>
+                    <a href="https://harmony-homes.netlify.app/" target="_blank">Visit Harmony Homes</a>
+                </div>
+            </div>
+        </div>
+        <div class="book-card">
+            <div class="book-front">
+                <img src="aqua-web.JPG" alt="Book Title" class="book-image">
+                <div class="book-info">
+                    <h3>Aquarium Website</h3>
+                    <p>Author: Remiyyah</p>
+                </div>
+            </div>
+            <div class="book-back">
+                <div class="book-info">
+                    <h3>Link to Website</h3>
+                    <a href="https://www.github.com/Remiyyah" target="_blank">Visit GitHub</a>
+                </div>
+            </div>
+        </div>
+        <div class="book-card">
+            <div class="book-front">
+                <img src="account-web.jpg" alt="Book Title" class="book-image">
+                <div class="book-info">
+                    <h3>Jedi Junction Account Page</h3>
+                    <p>Author: Remiyyah</p>
+                </div>
+            </div>
+            <div class="book-back">
+                <div class="book-info">
+                    <h3>Link to Website</h3>
+                    <a href="https://remiyyah.github.io/AJAX-Account-Page/" target="_blank">Visit Account Page</a>
+                </div>
+            </div>
+        </div>
+    </div>
+     <div class="card" id="detailCard">
+        <div class="card-image">
+            <img src="me-528.jpg" alt="Your Image">
+        </div>
+        <div class="card-details">
+            <div class="card-title">Remiyyah</div>
+            <div class="card-info">Software Engineer</div>
+            <div class="card-info">USA</div>
+            <div class="social-links">
+                <a href="#">Website</a>
+                <a href="#">LinkedIn</a>
+                <a href="#">Twitter</a>
+            </div>
+        </div>
+    </div>
+    <div class="smoke"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/gsap.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const bookshelf = document.getElementById('bookshelf');
+        const detailCard = document.getElementById('detailCard');
+        const bookCards = document.querySelectorAll('.book-card');
+        const navbar = document.querySelector('nav');
+
+        // Entrance animation for book cards
+        gsap.from(bookCards, { opacity: 0, y: 50, duration: 1, stagger: 0.2 });
+
+        // Click-to-flip animation for book cards
+        bookCards.forEach(bookCard => {
+            bookCard.addEventListener('mouseenter', () => {
+                gsap.to(bookCard, { scale: 1.05, rotation: 5, duration: 0.3, boxShadow: "0 10px 30px rgba(0, 0, 0, 0.2)" });
+            });
+
+            bookCard.addEventListener('mouseleave', () => {
+                gsap.to(bookCard, { scale: 1, rotation: 0, duration: 0.3, boxShadow: "0 5px 15px rgba(0, 0, 0, 0.1)" });
+            });
+
+            bookCard.addEventListener('click', () => {
+                bookCard.classList.toggle('flipped');
+            });
+        });
+
+        // Define animation timeline for bookshelf bumping
+        const tl = gsap.timeline();
+
+        // Define animation sequence
+        tl.to(bookshelf, { x: -50, duration: 0.5 }) // Bump to the left
+          .to(bookshelf, { x: 50, duration: 0.5 })  // Bump to the right
+          .to(bookshelf, { x: 0, duration: 0.5 })   // Return to original position
+          .call(function() {
+              // After animation is complete, trigger detail card animation
+              tlDetail.restart();
+          });
+
+        // Define animation timeline for detail card
+        const tlDetail = gsap.timeline({ paused: true });
+
+        // Define detail card animation sequence
+        tlDetail.from(detailCard, { opacity: 0, y: 50, duration: 1 });
+
+        // Navbar animation
+       // Navbar animation
+gsap.set(navbar, { y: "100%" });
+
+let tlNavbar = gsap.timeline();
+tlNavbar.to(navbar, { duration: 1, y: "-100%", ease: "power2.inOut" })
+        .to(navbar, { duration: 1, y: "0%", ease: "power2.inOut", delay: 1 });
+// Total duration: 5 seconds (1 second in, 1 second out, 3 seconds delay)
+
+        // Start the bookshelf animation
+        tl.play();
+    });
+</script>
+</body>
+</html>
